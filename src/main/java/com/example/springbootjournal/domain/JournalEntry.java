@@ -1,28 +1,35 @@
 package com.example.springbootjournal.domain;
 
+import com.example.springbootjournal.utils.JsonDateSerializer;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import net.minidev.json.annotate.JsonIgnore;
+
 import javax.persistence.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Entity
-public class Journal {
+@Table(name = "entry")
+public class JournalEntry {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
     private Date created;
     private String summary;
 
     @Transient
-    private SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+    private final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
-    public Journal() {
+    public JournalEntry() {
     }
 
-    public Journal(String title, Date created, String summary) throws ParseException {
+    public JournalEntry(String title, String created, String summary) throws ParseException {
         this.title = title;
-        this.created = created;
+        this.created = format.parse(created);
         this.summary = summary;
     }
 
@@ -42,6 +49,7 @@ public class Journal {
         this.title = title;
     }
 
+    @JsonSerialize(using = JsonDateSerializer.class)
     public Date getCreated() {
         return created;
     }
@@ -58,12 +66,13 @@ public class Journal {
         this.summary = summary;
     }
 
+    @JsonIgnore
     public String getCreatedAsShort() {
         return format.format(created);
     }
 
     public String toString() {
-        StringBuilder value = new StringBuilder("JournalEntry(");
+        StringBuilder value = new StringBuilder("* JournalEntry(");
         value.append("Id: ");
         value.append(id);
         value.append(",Title: ");
