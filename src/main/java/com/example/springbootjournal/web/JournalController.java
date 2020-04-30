@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class JournalController {
@@ -25,13 +24,13 @@ public class JournalController {
     }
 
     @GetMapping(path = "/all")
-//    @PreAuthorize("hasAuthority('journal:read'")
+    @PreAuthorize("hasAuthority('journal:read')")
     public List<JournalEntry> getAllJournals() {
         return repo.findAll();
     }
 
     @PostMapping(path = "/add")
-//    @PreAuthorize("hasAuthority('journal:write'")
+    @PreAuthorize("hasAuthority('journal:write')")
     public void addJournal(@RequestBody JournalEntry journalEntry) {
         repo.save(journalEntry);
     }
