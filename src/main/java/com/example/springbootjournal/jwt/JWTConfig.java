@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 public class JWTConfig {
     private String secretKey;
     private String tokenPrefix;
-    private String tokenExpirationAfterDays;
+    private Integer tokenExpirationAfterDays;
 
     public JWTConfig() {
     }
@@ -30,11 +30,11 @@ public class JWTConfig {
         this.tokenPrefix = tokenPrefix;
     }
 
-    public String getTokenExpirationAfterDays() {
+    public Integer getTokenExpirationAfterDays() {
         return tokenExpirationAfterDays;
     }
 
-    public void setTokenExpirationAfterDays(String tokenExpirationAfterDays) {
+    public void setTokenExpirationAfterDays(Integer tokenExpirationAfterDays) {
         this.tokenExpirationAfterDays = tokenExpirationAfterDays;
     }
 
