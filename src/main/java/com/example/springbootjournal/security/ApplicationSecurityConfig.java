@@ -2,6 +2,7 @@ package com.example.springbootjournal.security;
 
 import com.example.springbootjournal.auth.ApplicationUserService;
 import com.example.springbootjournal.jwt.JWTAuthenticationFilter;
+import com.example.springbootjournal.jwt.JWTConfig;
 import com.example.springbootjournal.jwt.JWTTokenVerifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +17,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.crypto.SecretKey;
+
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -23,12 +26,16 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final PasswordEncoder passwordEncoder;
     private final ApplicationUserService applicationUserService;
+    private final SecretKey secretKey;
+    private JWTConfig jwtConfig;
 
     @Autowired
     public ApplicationSecurityConfig(PasswordEncoder passwordEncoder,
-                                     ApplicationUserService applicationUserService) {
+                                     ApplicationUserService applicationUserService, SecretKey secretKey, JWTConfig jwtConfig) {
         this.passwordEncoder = passwordEncoder;
         this.applicationUserService = applicationUserService;
+        this.secretKey = secretKey;
+        this.jwtConfig = jwtConfig;
     }
 
     @Override
@@ -38,8 +45,8 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilter(new JWTAuthenticationFilter(authenticationManager()))
-                .addFilterAfter(new JWTTokenVerifier(), JWTAuthenticationFilter.class)
+                .addFilter(new JWTAuthenticationFilter(authenticationManager(), jwtConfig, secretKey))
+                .addFilterAfter(new JWTTokenVerifier(secretKey, jwtConfig), JWTAuthenticationFilter.class)
                 .authorizeRequests()
                 .anyRequest()
                 .authenticated();
