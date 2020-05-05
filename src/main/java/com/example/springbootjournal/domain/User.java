@@ -7,9 +7,12 @@ import java.util.Collection;
 @Table(name = "user")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private int id;
+
+    @Column(name = "username")
+    private String username;
 
     @Column(name = "email")
     private String email;
@@ -17,16 +20,10 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "name")
-    private String name;
-
-    @Column(name = "last_name")
-    private String lastName;
-
     @Column(name = "active")
-    private int active;
+    private Boolean active;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "user_authority", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "authority_id"))
     private Collection<Authority> authorities;
 
@@ -57,27 +54,19 @@ public class User {
         this.password = password;
     }
 
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public int getActive() {
+    public Boolean getActive() {
         return active;
     }
 
-    public void setActive(int active) {
+    public void setActive(Boolean active) {
         this.active = active;
     }
 
